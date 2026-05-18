@@ -4,18 +4,21 @@ import 'package:medicine_tracker/bloc/medicine_bloc.dart';
 import 'package:medicine_tracker/bloc/medicine_event.dart';
 import 'package:medicine_tracker/bloc/medicine_state.dart';
 import 'package:medicine_tracker/data/models/medicine_model.dart';
-import 'package:medicine_tracker/ui/ui_config.dart';
+
+const Color _primary = Color(0xFF0B6E8A);
+const Color _mediumTeal = Color(0xFF3DAA8C);
+const Color _paleCyan = Color(0xFFD4EEF4);
+const Color _errorRed = Color(0xFFE05252);
+const Color _background = Color(0xFFF0F8FA);
 
 class AddMedicinePage extends StatefulWidget {
   const AddMedicinePage({super.key});
 
   @override
-  State<AddMedicinePage> createState() =>
-      _AddMedicinePageState();
+  State<AddMedicinePage> createState() => _AddMedicinePageState();
 }
 
-class _AddMedicinePageState
-    extends State<AddMedicinePage> {
+class _AddMedicinePageState extends State<AddMedicinePage> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
   final _dosageCtrl = TextEditingController();
@@ -39,8 +42,8 @@ class _AddMedicinePageState
       builder: (context, child) => Theme(
         data: Theme.of(context).copyWith(
           colorScheme: const ColorScheme.light(
-            primary: AppTheme.primary,
-            onSurface: AppTheme.primary,
+            primary: _primary,
+            onSurface: _primary,
           ),
         ),
         child: child!,
@@ -61,45 +64,37 @@ class _AddMedicinePageState
       medicineName: _nameCtrl.text.trim(),
       dosage: _dosageCtrl.text.trim(),
       time: _timeCtrl.text.trim(),
-      notes: _notesCtrl.text.trim().isEmpty
-          ? null
-          : _notesCtrl.text.trim(),
+      notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
       status: 'Not Taken',
     );
 
-    context
-        .read<MedicineBloc>()
-        .add(AddMedicine(medicine));
+    context.read<MedicineBloc>().add(AddMedicine(medicine));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<MedicineBloc,
-        MedicineState>(
+    return BlocListener<MedicineBloc, MedicineState>(
       listener: (context, state) {
         if (state is MedicineOperationSuccess) {
           setState(() => _isLoading = false);
           Navigator.pop(context);
         } else if (state is MedicineError) {
           setState(() => _isLoading = false);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppTheme.errorRed,
+              backgroundColor: _errorRed,
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: AppTheme.background,
+        backgroundColor: _background,
         appBar: AppBar(
           title: const Text('Add Medicine'),
           leading: IconButton(
-            icon: const Icon(
-                Icons.arrow_back_ios_rounded),
-            onPressed: () =>
-                Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back_ios_rounded),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
         body: SingleChildScrollView(
@@ -107,11 +102,9 @@ class _AddMedicinePageState
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _sectionHeader(
-                    'Medicine Details'),
+                _sectionHeader('Medicine Details'),
                 const SizedBox(height: 16),
                 _labeledField(
                   label: 'Medicine Name',
@@ -119,9 +112,7 @@ class _AddMedicinePageState
                   controller: _nameCtrl,
                   icon: Icons.medication_rounded,
                   validator: (v) =>
-                      v == null || v.isEmpty
-                          ? 'Name is required'
-                          : null,
+                      v == null || v.isEmpty ? 'Name is required' : null,
                 ),
                 const SizedBox(height: 20),
                 _labeledField(
@@ -130,9 +121,7 @@ class _AddMedicinePageState
                   controller: _dosageCtrl,
                   icon: Icons.colorize_rounded,
                   validator: (v) =>
-                      v == null || v.isEmpty
-                          ? 'Dosage is required'
-                          : null,
+                      v == null || v.isEmpty ? 'Dosage is required' : null,
                 ),
                 const SizedBox(height: 20),
                 GestureDetector(
@@ -142,12 +131,9 @@ class _AddMedicinePageState
                       label: 'Time',
                       hint: 'Tap to select time',
                       controller: _timeCtrl,
-                      icon: Icons
-                          .access_time_rounded,
+                      icon: Icons.access_time_rounded,
                       validator: (v) =>
-                          v == null || v.isEmpty
-                              ? 'Time is required'
-                              : null,
+                          v == null || v.isEmpty ? 'Time is required' : null,
                     ),
                   ),
                 ),
@@ -156,8 +142,7 @@ class _AddMedicinePageState
                 const SizedBox(height: 16),
                 _labeledField(
                   label: 'Notes',
-                  hint:
-                      'e.g. Take after meals (optional)',
+                  hint: 'e.g. Take after meals (optional)',
                   controller: _notesCtrl,
                   icon: Icons.notes_rounded,
                   maxLines: 3,
@@ -165,22 +150,15 @@ class _AddMedicinePageState
                 const SizedBox(height: 36),
                 Center(
                   child: ElevatedButton(
-                    onPressed: _isLoading
-                        ? null
-                        : _submit,
+                    onPressed: _isLoading ? null : _submit,
                     child: _isLoading
                         ? const SizedBox(
                             width: 18,
                             height: 18,
-                            child:
-                                CircularProgressIndicator(
-                                    color: Colors
-                                        .white,
-                                    strokeWidth:
-                                        2),
+                            child: CircularProgressIndicator(
+                                color: Colors.white, strokeWidth: 2),
                           )
-                        : const Text(
-                            'Add Medicine'),
+                        : const Text('Add Medicine'),
                   ),
                 ),
               ],
@@ -198,9 +176,8 @@ class _AddMedicinePageState
           width: 4,
           height: 18,
           decoration: BoxDecoration(
-            color: AppTheme.mediumTeal,
-            borderRadius:
-                BorderRadius.circular(2),
+            color: _mediumTeal,
+            borderRadius: BorderRadius.circular(2),
           ),
         ),
         const SizedBox(width: 8),
@@ -209,7 +186,7 @@ class _AddMedicinePageState
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w700,
-            color: AppTheme.primary,
+            color: _primary,
             letterSpacing: 0.3,
           ),
         ),
@@ -226,21 +203,18 @@ class _AddMedicinePageState
     int maxLines = 1,
   }) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon,
-                size: 15,
-                color: AppTheme.mediumTeal),
+            Icon(icon, size: 15, color: _mediumTeal),
             const SizedBox(width: 6),
             Text(
               label,
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: AppTheme.mediumTeal,
+                color: _mediumTeal,
               ),
             ),
           ],
@@ -255,35 +229,22 @@ class _AddMedicinePageState
             filled: true,
             fillColor: Colors.white,
             contentPadding:
-                const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 14),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.paleCyan,
-                  width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _paleCyan, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.paleCyan,
-                  width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _paleCyan, width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.primary,
-                  width: 2),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.errorRed,
-                  width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _errorRed, width: 1.5),
             ),
           ),
         ),

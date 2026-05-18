@@ -4,20 +4,25 @@ import 'package:medicine_tracker/bloc/medicine_bloc.dart';
 import 'package:medicine_tracker/bloc/medicine_event.dart';
 import 'package:medicine_tracker/bloc/medicine_state.dart';
 import 'package:medicine_tracker/data/models/medicine_model.dart';
-import 'package:medicine_tracker/ui/ui_config.dart';
+
+const Color _primary = Color(0xFF0B6E8A);
+const Color _mediumTeal = Color(0xFF3DAA8C);
+const Color _paleCyan = Color(0xFFD4EEF4);
+const Color _errorRed = Color(0xFFE05252);
+const Color _takenGreen = Color(0xFF2E9B6E);
+const Color _pendingAmber = Color(0xFFF09B3A);
+const Color _background = Color(0xFFF0F8FA);
+const Color _darkText = Color(0xFF1A3A42);
 
 class MedicineDetailPage extends StatefulWidget {
   final Medicine medicine;
-  const MedicineDetailPage(
-      {super.key, required this.medicine});
+  const MedicineDetailPage({super.key, required this.medicine});
 
   @override
-  State<MedicineDetailPage> createState() =>
-      _MedicineDetailPageState();
+  State<MedicineDetailPage> createState() => _MedicineDetailPageState();
 }
 
-class _MedicineDetailPageState
-    extends State<MedicineDetailPage> {
+class _MedicineDetailPageState extends State<MedicineDetailPage> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameCtrl;
   late TextEditingController _dosageCtrl;
@@ -29,14 +34,10 @@ class _MedicineDetailPageState
   @override
   void initState() {
     super.initState();
-    _nameCtrl = TextEditingController(
-        text: widget.medicine.medicineName);
-    _dosageCtrl = TextEditingController(
-        text: widget.medicine.dosage);
-    _timeCtrl = TextEditingController(
-        text: widget.medicine.time);
-    _notesCtrl = TextEditingController(
-        text: widget.medicine.notes ?? '');
+    _nameCtrl = TextEditingController(text: widget.medicine.medicineName);
+    _dosageCtrl = TextEditingController(text: widget.medicine.dosage);
+    _timeCtrl = TextEditingController(text: widget.medicine.time);
+    _notesCtrl = TextEditingController(text: widget.medicine.notes ?? '');
   }
 
   @override
@@ -54,8 +55,7 @@ class _MedicineDetailPageState
       initialTime: TimeOfDay.now(),
       builder: (ctx, child) => Theme(
         data: Theme.of(ctx).copyWith(
-          colorScheme: const ColorScheme.light(
-              primary: AppTheme.primary),
+          colorScheme: const ColorScheme.light(primary: _primary),
         ),
         child: child!,
       ),
@@ -75,43 +75,34 @@ class _MedicineDetailPageState
       medicineName: _nameCtrl.text.trim(),
       dosage: _dosageCtrl.text.trim(),
       time: _timeCtrl.text.trim(),
-      notes: _notesCtrl.text.trim().isEmpty
-          ? null
-          : _notesCtrl.text.trim(),
+      notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
     );
 
-    context.read<MedicineBloc>().add(
-        UpdateMedicine(
-            widget.medicine.id!, updated));
+    context
+        .read<MedicineBloc>()
+        .add(UpdateMedicine(widget.medicine.id!, updated));
   }
 
   void _confirmDelete() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('Delete Medicine?'),
-        content: Text(
-            'Remove ${widget.medicine.medicineName} from your tracker?'),
+        content:
+            Text('Remove ${widget.medicine.medicineName} from your tracker?'),
         actions: [
           TextButton(
-            onPressed: () =>
-                Navigator.pop(context),
-            child: Text('Cancel',
-                style: TextStyle(
-                    color: Colors.grey[600])),
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel', style: TextStyle(color: Colors.grey[600])),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                backgroundColor:
-                    AppTheme.errorRed),
+            style: ElevatedButton.styleFrom(backgroundColor: _errorRed),
             onPressed: () {
               Navigator.pop(context);
-              context.read<MedicineBloc>().add(
-                  DeleteMedicine(
-                      widget.medicine.id!));
+              context
+                  .read<MedicineBloc>()
+                  .add(DeleteMedicine(widget.medicine.id!));
             },
             child: const Text('Delete'),
           ),
@@ -122,39 +113,32 @@ class _MedicineDetailPageState
 
   @override
   Widget build(BuildContext context) {
-    final isTaken =
-        widget.medicine.status == 'Taken';
+    final isTaken = widget.medicine.status == 'Taken';
 
-    return BlocListener<MedicineBloc,
-        MedicineState>(
+    return BlocListener<MedicineBloc, MedicineState>(
       listener: (context, state) {
         if (state is MedicineOperationSuccess) {
           setState(() => _isLoading = false);
           Navigator.pop(context);
         } else if (state is MedicineError) {
           setState(() => _isLoading = false);
-          ScaffoldMessenger.of(context)
-              .showSnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
-              backgroundColor: AppTheme.errorRed,
+              backgroundColor: _errorRed,
             ),
           );
         }
       },
       child: Scaffold(
-        backgroundColor: AppTheme.background,
+        backgroundColor: _background,
         appBar: AppBar(
-          title: Text(_isEditing
-              ? 'Edit Medicine'
-              : 'Medicine Details'),
+          title: Text(_isEditing ? 'Edit Medicine' : 'Medicine Details'),
           leading: IconButton(
-            icon: const Icon(
-                Icons.arrow_back_ios_rounded),
+            icon: const Icon(Icons.arrow_back_ios_rounded),
             onPressed: () {
               if (_isEditing) {
-                setState(
-                    () => _isEditing = false);
+                setState(() => _isEditing = false);
               } else {
                 Navigator.pop(context);
               }
@@ -163,24 +147,19 @@ class _MedicineDetailPageState
           actions: [
             if (!_isEditing)
               IconButton(
-                icon: const Icon(
-                    Icons.edit_rounded),
-                onPressed: () => setState(
-                    () => _isEditing = true),
+                icon: const Icon(Icons.edit_rounded),
+                onPressed: () => setState(() => _isEditing = true),
               ),
             if (!_isEditing)
               IconButton(
-                icon: const Icon(
-                    Icons.delete_outline_rounded),
+                icon: const Icon(Icons.delete_outline_rounded),
                 onPressed: _confirmDelete,
               ),
           ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
-          child: _isEditing
-              ? _buildEditForm()
-              : _buildDetailView(isTaken),
+          child: _isEditing ? _buildEditForm() : _buildDetailView(isTaken),
         ),
       ),
     );
@@ -188,54 +167,40 @@ class _MedicineDetailPageState
 
   Widget _buildDetailView(bool isTaken) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [
-                AppTheme.primary,
-                AppTheme.mediumTeal
-              ],
+              colors: [_primary, _mediumTeal],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius:
-                BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.white
-                          .withValues(alpha: 0.2),
-                      borderRadius:
-                          BorderRadius.circular(
-                              12),
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(
-                        Icons.medication_rounded,
-                        color: Colors.white,
-                        size: 28),
+                    child: const Icon(Icons.medication_rounded,
+                        color: Colors.white, size: 28),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Text(
-                      widget
-                          .medicine.medicineName,
+                      widget.medicine.medicineName,
                       style: const TextStyle(
                         fontSize: 22,
-                        fontWeight:
-                            FontWeight.w800,
+                        fontWeight: FontWeight.w800,
                         color: Colors.white,
                       ),
                     ),
@@ -245,36 +210,24 @@ class _MedicineDetailPageState
               const SizedBox(height: 16),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6),
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: isTaken
-                      ? AppTheme.takenGreen
-                      : AppTheme.pendingAmber,
-                  borderRadius:
-                      BorderRadius.circular(20),
+                  color: isTaken ? _takenGreen : _pendingAmber,
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  isTaken
-                      ? '✓  Taken'
-                      : '✗  Not Taken',
+                  isTaken ? '✓  Taken' : '✗  Not Taken',
                   style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
                     fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
                   ),
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: 24),
-        _detailCard(
-            label: 'Medicine Name',
-            value: widget.medicine.medicineName,
-            icon: Icons.medication_rounded),
-        const SizedBox(height: 12),
+        const SizedBox(height: 20),
         Row(
           children: [
             Expanded(
@@ -288,8 +241,7 @@ class _MedicineDetailPageState
               child: _detailCard(
                   label: 'Time',
                   value: widget.medicine.time,
-                  icon:
-                      Icons.access_time_rounded),
+                  icon: Icons.access_time_rounded),
             ),
           ],
         ),
@@ -297,15 +249,11 @@ class _MedicineDetailPageState
         _detailCard(
           label: 'Status',
           value: isTaken ? 'Taken' : 'Not Taken',
-          icon:
-              Icons.check_circle_outline_rounded,
-          valueColor: isTaken
-              ? AppTheme.takenGreen
-              : AppTheme.pendingAmber,
+          icon: Icons.check_circle_outline_rounded,
+          valueColor: isTaken ? _takenGreen : _pendingAmber,
         ),
         if (widget.medicine.notes != null &&
-            widget
-                .medicine.notes!.isNotEmpty) ...[
+            widget.medicine.notes!.isNotEmpty) ...[
           const SizedBox(height: 12),
           _detailCard(
               label: 'Notes',
@@ -316,29 +264,20 @@ class _MedicineDetailPageState
         Center(
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: isTaken
-                  ? AppTheme.pendingAmber
-                  : AppTheme.takenGreen,
+              backgroundColor: isTaken ? _pendingAmber : _takenGreen,
             ),
             icon: Icon(
-              isTaken
-                  ? Icons.undo_rounded
-                  : Icons.check_rounded,
+              isTaken ? Icons.undo_rounded : Icons.check_rounded,
               color: Colors.white,
               size: 16,
             ),
             label: Text(
-              isTaken
-                  ? 'Mark as Not Taken'
-                  : 'Mark as Taken',
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 13),
+              isTaken ? 'Mark as Not Taken' : 'Mark as Taken',
+              style: const TextStyle(color: Colors.white, fontSize: 13),
             ),
             onPressed: () => context
                 .read<MedicineBloc>()
-                .add(ToggleMedicineStatus(
-                    widget.medicine)),
+                .add(ToggleMedicineStatus(widget.medicine)),
           ),
         ),
       ],
@@ -353,26 +292,22 @@ class _MedicineDetailPageState
   }) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-          horizontal: 16, vertical: 14),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-            color: AppTheme.paleCyan, width: 1.5),
+        border: Border.all(color: _paleCyan, width: 1.5),
       ),
       child: Row(
         children: [
-          Icon(icon,
-              size: 18,
-              color: AppTheme.mediumTeal),
+          Icon(icon, size: 18, color: _mediumTeal),
           const SizedBox(width: 10),
           Text(
             '$label: ',
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: AppTheme.mediumTeal,
+              color: _mediumTeal,
             ),
           ),
           Expanded(
@@ -381,8 +316,7 @@ class _MedicineDetailPageState
               style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: valueColor ??
-                    const Color(0xFF1A3A42),
+                color: valueColor ?? _darkText,
               ),
             ),
           ),
@@ -395,17 +329,14 @@ class _MedicineDetailPageState
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _labeledField(
             label: 'Medicine Name',
             hint: 'e.g. Amoxicillin',
             controller: _nameCtrl,
             icon: Icons.medication_rounded,
-            validator: (v) => v!.isEmpty
-                ? 'Name is required'
-                : null,
+            validator: (v) => v!.isEmpty ? 'Name is required' : null,
           ),
           const SizedBox(height: 20),
           _labeledField(
@@ -413,9 +344,7 @@ class _MedicineDetailPageState
             hint: 'e.g. 500mg',
             controller: _dosageCtrl,
             icon: Icons.colorize_rounded,
-            validator: (v) => v!.isEmpty
-                ? 'Dosage is required'
-                : null,
+            validator: (v) => v!.isEmpty ? 'Dosage is required' : null,
           ),
           const SizedBox(height: 20),
           GestureDetector(
@@ -426,17 +355,14 @@ class _MedicineDetailPageState
                 hint: 'Select time',
                 controller: _timeCtrl,
                 icon: Icons.access_time_rounded,
-                validator: (v) => v!.isEmpty
-                    ? 'Time is required'
-                    : null,
+                validator: (v) => v!.isEmpty ? 'Time is required' : null,
               ),
             ),
           ),
           const SizedBox(height: 20),
           _labeledField(
             label: 'Notes',
-            hint:
-                'e.g. Take after meals (optional)',
+            hint: 'e.g. Take after meals (optional)',
             controller: _notesCtrl,
             icon: Icons.notes_rounded,
             maxLines: 3,
@@ -444,21 +370,15 @@ class _MedicineDetailPageState
           const SizedBox(height: 32),
           Center(
             child: ElevatedButton(
-              onPressed: _isLoading
-                  ? null
-                  : _saveChanges,
+              onPressed: _isLoading ? null : _saveChanges,
               child: _isLoading
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child:
-                          CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2),
+                      child: CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 2),
                     )
-                  : const Text('Save Changes',
-                      style: TextStyle(
-                          fontSize: 13)),
+                  : const Text('Save Changes', style: TextStyle(fontSize: 13)),
             ),
           ),
         ],
@@ -475,21 +395,18 @@ class _MedicineDetailPageState
     int maxLines = 1,
   }) {
     return Column(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon,
-                size: 15,
-                color: AppTheme.mediumTeal),
+            Icon(icon, size: 15, color: _mediumTeal),
             const SizedBox(width: 6),
             Text(
               label,
               style: const TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-                color: AppTheme.mediumTeal,
+                color: _mediumTeal,
               ),
             ),
           ],
@@ -504,35 +421,22 @@ class _MedicineDetailPageState
             filled: true,
             fillColor: Colors.white,
             contentPadding:
-                const EdgeInsets.symmetric(
-                    horizontal: 16, vertical: 14),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             border: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.paleCyan,
-                  width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _paleCyan, width: 1.5),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.paleCyan,
-                  width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _paleCyan, width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.primary,
-                  width: 2),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _primary, width: 2),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius:
-                  BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                  color: AppTheme.errorRed,
-                  width: 1.5),
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: _errorRed, width: 1.5),
             ),
           ),
         ),
