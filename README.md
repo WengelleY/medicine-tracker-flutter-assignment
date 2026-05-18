@@ -52,16 +52,6 @@ A Flutter application for tracking daily medicines using **BLoC state management
 
 ---
 
-## 🎨 Color Palette
-
-| Color       | Hex       | Usage                             |
-| ----------- | --------- | --------------------------------- |
-| Mint Green  | `#DEF5E5` | Chip backgrounds, icon containers |
-| Medium Teal | `#3DAA8C` | Secondary buttons, icons, accents |
-| Deep Teal   | `#0B6E8A` | Primary color, app bar, CTAs      |
-| Pale Cyan   | `#D4EEF4` | Card borders, chip backgrounds    |
-| Off White   | `#F0F8FA` | Scaffold background               |
-
 ---
 
 ## BLoC Architecture
