@@ -32,8 +32,11 @@ A Flutter application for tracking daily medicines using **BLoC state management
 ## Features
 
 | **CREATE** Add medicines with name, dosage, time, and optional notes
+
 | **READ** View full medicine list with live status on home screen
+
 | **UPDATE** Edit any medicine detail or toggle Taken/Not Taken status
+
 | **DELETE** |Remove medicines with a confirmation dialog
 
 ---
