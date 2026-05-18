@@ -78,28 +78,6 @@ ToggleMedicineStatus  →    MedicineError(message)
 
 ---
 
-## API Endpoints Used
-
-| Method   | Endpoint         | Description           |
-| -------- | ---------------- | --------------------- |
-| `GET`    | `/medicines`     | Load all medicines    |
-| `POST`   | `/medicines`     | Create a new medicine |
-| `PUT`    | `/medicines/:id` | Update a medicine     |
-| `DELETE` | `/medicines/:id` | Delete a medicine     |
-
 ---
-
-## Medicine Object
-
-```json
-{
-  "id": "1",
-  "medicineName": "Amoxicillin",
-  "dosage": "500mg",
-  "time": "08:00 AM",
-  "status": "Not Taken",
-  "notes": "Take after meals"
-}
-```
 
 ---
