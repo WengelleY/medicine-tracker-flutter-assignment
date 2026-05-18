@@ -1,0 +1,115 @@
+# MediTrack — Medicine Tracker App
+
+A Flutter application for tracking daily medicines using **BLoC state management** and **Dio** for HTTP requests .
+
+---
+
+## Screenshots
+
+## Author
+
+**[wengelle yohannes . ugr/2568/16 . sec 2]** — MediTrack · Flutter Assignment
+
+## Screenshots
+
+### intro Screen
+
+![intro Screen](screenshots/images/intro_page.jpg)
+
+### medicine list Screen
+
+![medicine list Screen](screenshots/images/medicine_list.jpg)
+
+### medicine details , creating, editing and deletion
+
+![medicine creating](screenshots/images/create_medicine.jpg)
+![medicine detail](screenshots/images/medicine_detail.jpg)
+![medicine editing](screenshots/images/edit_medicine.jpg)
+![medicine deletion](screenshots/images/medicine_delete.jpg)
+
+---
+
+## Features
+
+| **CREATE** Add medicines with name, dosage, time, and optional notes
+| **READ** View full medicine list with live status on home screen
+| **UPDATE** Edit any medicine detail or toggle Taken/Not Taken status
+| **DELETE** |Remove medicines with a confirmation dialog
+
+---
+
+## Tech Stack
+
+| Layer            | Technology            |
+| ---------------- | --------------------- |
+| State Management | `flutter_bloc ^8.1.4` |
+| HTTP Client      | `dio ^5.4.0`          |
+| Models           | `equatable ^2.0.5`    |
+| Fonts            | `google_fonts ^6.1.0` |
+| Backend          | MockAPI.io            |
+
+---
+
+---
+
+## 🎨 Color Palette
+
+| Color       | Hex       | Usage                             |
+| ----------- | --------- | --------------------------------- |
+| Mint Green  | `#DEF5E5` | Chip backgrounds, icon containers |
+| Medium Teal | `#3DAA8C` | Secondary buttons, icons, accents |
+| Deep Teal   | `#0B6E8A` | Primary color, app bar, CTAs      |
+| Pale Cyan   | `#D4EEF4` | Card borders, chip backgrounds    |
+| Off White   | `#F0F8FA` | Scaffold background               |
+
+---
+
+## BLoC Architecture
+
+```
+UI (Pages/Widgets)
+      │
+      │  dispatches Events
+      ▼
+ MedicineBloc
+      │
+      │  emits States
+      ▼
+UI rebuilds via BlocBuilder / BlocConsumer
+
+Events:                    States:
+─────────────────────      ──────────────────────────────────
+LoadMedicines         →    MedicineInitial
+AddMedicine           →    MedicineLoading
+UpdateMedicine        →    MedicineLoaded(medicines)
+DeleteMedicine        →    MedicineOperationSuccess(medicines, message)
+ToggleMedicineStatus  →    MedicineError(message)
+```
+
+---
+
+## API Endpoints Used
+
+| Method   | Endpoint         | Description           |
+| -------- | ---------------- | --------------------- |
+| `GET`    | `/medicines`     | Load all medicines    |
+| `POST`   | `/medicines`     | Create a new medicine |
+| `PUT`    | `/medicines/:id` | Update a medicine     |
+| `DELETE` | `/medicines/:id` | Delete a medicine     |
+
+---
+
+## Medicine Object
+
+```json
+{
+  "id": "1",
+  "medicineName": "Amoxicillin",
+  "dosage": "500mg",
+  "time": "08:00 AM",
+  "status": "Not Taken",
+  "notes": "Take after meals"
+}
+```
+
+---
